@@ -21,7 +21,7 @@ class Fresh_Promo extends WP_Widget {
 	
 	function form($instance) {
 	
-		$defaults = array( 'pid' => '', 'size' => 'full', 'action' => '' );
+		$defaults = array( 'pid' => '', 'size' => 'full', 'action' => '', 'anchor' => '' );
 		$instance = wp_parse_args( (array) $instance, $defaults ); ?>
 		
 		<p><label for="<?php echo $this->get_field_id('pid'); ?>">Post or Page ID:</label>
@@ -38,6 +38,9 @@ class Fresh_Promo extends WP_Widget {
 		
 		<p><label for="<?php echo $this->get_field_id('action'); ?>">Call to Action:</label>
 		<input type="text" class="widefat" id="<?php echo $this->get_field_id('action'); ?>" name="<?php echo $this->get_field_name('action'); ?>" placeholder="Optional" value="<?php echo $instance['action']; ?>" /></p>
+		
+		<p><label for="<?php echo $this->get_field_id('anchor'); ?>">Custom Link:</label>
+		<input type="text" class="widefat" id="<?php echo $this->get_field_id('anchor'); ?>" name="<?php echo $this->get_field_name('anchor'); ?>" placeholder="<?php bloginfo('url'); ?>" value="<?php echo $instance['anchor']; ?>" /></p>
 		
 <?php }
 	
@@ -56,10 +59,11 @@ class Fresh_Promo extends WP_Widget {
 		
 		// Create promo object + set variable for post thumbnail
 		$promo = get_post( $instance['pid'] );
+		$anchor = ( ! empty( $instance['anchor'] ) ) ? get_bloginfo('url').$instance['anchor'] : $promo->guid;
 		$image = get_the_post_thumbnail( $promo->ID, $instance['size'] );
 		
 		// Output actual widget
-		echo $before_widget; ?><a href="<?php echo $promo->guid; ?>"><?php if ( ! empty( $image ) ) echo $image; else echo '<img alt="Featured image is not set." src="#" />';
+		echo $before_widget; ?><a href="<?php echo $anchor; ?>"><?php if ( ! empty( $image ) ) echo $image; else echo '<img alt="Featured image is not set." src="#" />';
 if ( ! empty( $instance['action'] ) ) { ?><p class="action"><?php echo $instance['action']; ?></p><?php } ?></a><?php echo $after_widget;
 	
 	}
